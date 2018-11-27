@@ -1,0 +1,13 @@
+INSERT INTO films (name, description) VALUES
+  ('Floor', 'Visser', '1986-07-22'),
+  ('Floor', 'Valk', '1983-04-13'),
+  ('Floris', 'Vos', '1983-04-13'),
+  ('Fatima', 'Voorthuizen', '1956-12-16');
+
+INSERT INTO characters (name, sex, hair_color, age) VALUES
+  ('Floor', 'Visser', '1986-07-22'),
+  ('Floor', 'Valk', '1983-04-13'),
+  ('Floris', 'Vos', '1983-04-13'),
+  ('Fatima', 'Voorthuizen', '1956-12-16');
+
+INSERT INTO planets (name, climate)  
