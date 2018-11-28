@@ -1,4 +1,4 @@
-import {JsonController, Get, Param, /*BadRequestError*/} from 'routing-controllers'
+import {JsonController, Get, Param /*BadRequestError*/} from 'routing-controllers'
 import { Film, Planet, Character } from './entities'
 import { Brackets } from 'typeorm'
 
@@ -33,4 +33,4 @@ export default class MainController {
     getCharacters() {
       return Character.find()
     }
-}
+  }

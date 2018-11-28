@@ -1,4 +1,4 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, Entity, ManyToMany, JoinTable, OneToMany, ManyToOne } from 'typeorm'
+import { BaseEntity, PrimaryGeneratedColumn, Column, Entity, /*ManyToMany, JoinTable,*/ OneToMany, ManyToOne } from 'typeorm'
 
 @Entity()
 export class Film extends BaseEntity {
@@ -12,13 +12,40 @@ export class Film extends BaseEntity {
   @Column('text')
   description: string
 
-  @ManyToMany(() => Character, (character) => character.films)
-  @JoinTable()
-  public characters: Character[]
+  @OneToMany(() => (Planet), planet => planet.film)
+  planets: Planet[]
+
+  @OneToMany(() => (Character), character => character.film)
+  characters: Character[]
+
+  // @ManyToMany(() => Character, (character) => character.films)
+  // @JoinTable()
+  // public characters: Character[]
   
-  @ManyToMany(() => Planet, (planet) => planet.films)
-  @JoinTable()
-  public planets: Planet[]
+  // @ManyToMany(() => Planet, (planet) => planet.films)
+  // @JoinTable()
+  // public planets: Planet[]
+}
+
+@Entity()
+export class Planet extends BaseEntity {
+
+  @PrimaryGeneratedColumn()
+  id?: number
+
+  @Column('text')
+  name: string
+
+  @Column('text')
+  climate: string
+
+  // @ManyToMany(_ => Film, (film) => film.planets)
+  // films: Film[]
+  @ManyToOne(() => (Film), film => film.planets)
+  film: Film
+
+  @OneToMany(() => (Character), character => character.planet)
+  characters: Character[]
 }
 
 @Entity()
@@ -42,29 +69,13 @@ export class Character extends BaseEntity {
   @Column('int') 
   height: number
 
-  @ManyToMany(_ => Film, (film) => film.characters)
-  films: Film[]
+  // @ManyToMany(_ => Film, (film) => film.characters)
+  // films: Film[]
 
+  @ManyToOne(() => (Film), film => film.characters)
+  film: Film
+  
   @ManyToOne(() => (Planet), planet => planet.characters)
-  planets: Planet[]
+  planet: Planet
 }
 
-@Entity()
-export class Planet extends BaseEntity {
-
-  @PrimaryGeneratedColumn()
-  id?: number
-
-  @Column('text')
-  name: string
-
-  @Column('text')
-  climate: string
-
-  @ManyToMany(_ => Film, (film) => film.planets)
-  films: Film[]
-
-  @OneToMany(_ => Character, (character) => character.planets)
-  characters: Character[]
-
-}

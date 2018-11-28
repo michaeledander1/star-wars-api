@@ -1,17 +1,17 @@
-INSERT INTO films (name, description) VALUES
+INSERT INTO films (name, description, characters_id) VALUES
   ('Episode IV', 'The first old one'),
   ('Episode V', 'The second old one'),
   ('Episode VI', 'The third old one'),
   ('Episode II', 'The second newish one');
 
-INSERT INTO characters (name, sex, hair_color, age, height, planets_id) VALUES
-  ('Luke Skywalker', 'male', 'blonde', '21', '177', '1'),
-  ('Han Solo', 'male', 'black', '25', '182', '2'),
-  ('Leia', 'female', 'brown', '21', '165', '2'),
-  ('Padme Amidala', 'female', 'brown', '47', '162', '3'),
-  ('Darth Vader', 'male', 'red', '43', '200', '4'),
-  ('Chewbacka', 'male', 'blonde', '65', '268', '5'),
-  ('Yoda', 'male', 'white', '888', '75', '2');
+INSERT INTO characters (name, sex, hair_color, age, height, planets_id, films_id) VALUES
+  ('Luke Skywalker', 'male', 'blonde', '21', '177', '1', '1'),
+  ('Han Solo', 'male', 'black', '25', '182', '2', '1'),
+  ('Leia', 'female', 'brown', '21', '165', '2', '1'),
+  ('Padme Amidala', 'female', 'brown', '47', '162', '3', '1'),
+  ('Darth Vader', 'male', 'red', '43', '200', '4', '1'),
+  ('Chewbacka', 'male', 'blonde', '65', '268', '5', '1'),
+  ('Yoda', 'male', 'white', '888', '75', '2', '1');
 
 INSERT INTO planets (name, climate) VALUES
   ('Tatooine', 'arid'),
