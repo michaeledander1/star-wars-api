@@ -1,5 +1,6 @@
-import {/*Controller,*/ JsonController, Get, Param, /*BadRequestError*/} from 'routing-controllers'
+import {JsonController, Get, Param, /*BadRequestError*/} from 'routing-controllers'
 import { Film, Planet, Character } from './entities'
+import { /*getConnection*/ } from 'typeorm'
 
 @JsonController()
 export default class MainController {
@@ -15,15 +16,16 @@ export default class MainController {
     async getPlanets(
       @Param('climate') climate: string
     ) {
-      const planet = await Planet.find({
-        relations: ["characters"],
-        where: {climate : climate}
-      })
-      return planet
+      return await Planet.createQueryBuilder("planet")
+        .leftJoinAndSelect("planet.characters", "character")
+        .where("planet.climate = :climate", { climate: climate })
+        .andWhere("character.hair_color = :hair_color", { hair_color: "brown"})
+        .getMany()
+      }
       // if (!planet) throw new BadRequestError('Planet does not exist')
       // if(planet.characters.length === 0) throw new BadRequestError('this planet has no characters')
       // return planet.characters
-    }
+    
 
     @Get('/characters')
     getCharacters() {
