@@ -11,13 +11,13 @@ export default class MainController {
       return Film.findOne(id) 
     }
 
-    @Get("/planets/:id([0-9]+)")
+    @Get("/planets/:climate")
     async getPlanets(
-      @Param('id') id: number
+      @Param('climate') climate: string
     ) {
       const planet = await Planet.find({
         relations: ["characters"],
-        where: {id : id}
+        where: {climate : climate}
       })
       return planet
       // if (!planet) throw new BadRequestError('Planet does not exist')
