@@ -1,4 +1,4 @@
-import { BaseEntity, PrimaryGeneratedColumn, Column, Entity, ManyToMany, JoinTable } from 'typeorm'
+import { BaseEntity, PrimaryGeneratedColumn, Column, Entity, ManyToMany, JoinTable, OneToMany, ManyToOne } from 'typeorm'
 
 @Entity()
 export class Film extends BaseEntity {
@@ -42,7 +42,7 @@ export class Character extends BaseEntity {
   @ManyToMany(_ => Film, (film) => film.characters)
   films: Film[]
 
-  @ManyToMany(() => (Planet), planet => planet.characters)
+  @ManyToOne(() => (Planet), planet => planet.characters)
   planets: Planet[]
 }
 
@@ -56,15 +56,12 @@ export class Planet extends BaseEntity {
   name: string
 
   @Column('text')
-  description: string
-
-  @Column('text')
   climate: string
 
   @ManyToMany(_ => Film, (film) => film.planets)
   films: Film[]
 
-  @ManyToMany(_ => Character, (character) => character.planets)
-  @JoinTable()
+  @OneToMany(_ => Character, (character) => character.planets)
   characters: Character[]
+
 }
