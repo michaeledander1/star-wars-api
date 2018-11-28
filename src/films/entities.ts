@@ -39,6 +39,9 @@ export class Character extends BaseEntity {
   @Column('int')
   age: number
 
+  @Column('int') 
+  height: number
+
   @ManyToMany(_ => Film, (film) => film.characters)
   films: Film[]
 

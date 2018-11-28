@@ -4,20 +4,20 @@ INSERT INTO films (name, description) VALUES
   ('Episode VI', 'The third old one'),
   ('Episode II', 'The second newish one');
 
-INSERT INTO characters (name, sex, hair_color, age, planets_id) VALUES
-  ('Luke Skywalker', 'male', 'blonde', '21', '1'),
-  ('Han Solo', 'male', 'black', '25', '2'),
-  ('Leia', 'female', 'brown', '21', '2'),
-  ('Padme Amidala', 'female', 'brown', '47', '3'),
-  ('Darth Vader', 'male', 'red', '43', '4'),
-  ('Chewbacka', 'male', 'blonde', '65', '5'),
-  ('yoda', 'male', 'white', '888', '2');
+INSERT INTO characters (name, sex, hair_color, age, height, planets_id) VALUES
+  ('Luke Skywalker', 'male', 'blonde', '21', '177', '1'),
+  ('Han Solo', 'male', 'black', '25', '182', '2'),
+  ('Leia', 'female', 'brown', '21', '165', '2'),
+  ('Padme Amidala', 'female', 'brown', '47', '162', '3'),
+  ('Darth Vader', 'male', 'red', '43', '200', '4'),
+  ('Chewbacka', 'male', 'blonde', '65', '268', '5'),
+  ('Yoda', 'male', 'white', '888', '75', '2');
 
 INSERT INTO planets (name, climate) VALUES
   ('Tatooine', 'arid'),
   ('Coruscant', 'temperate'),
   ('Endor', 'temperate'), 
-  ('Hoth', 'artic'),
+  ('Hoth', 'arctic'),
   ('Geonosis', 'arid');
 
 INSERT INTO films_characters_characters (films_id, characters_id) VALUES
