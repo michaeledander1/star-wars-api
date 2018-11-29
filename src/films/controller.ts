@@ -4,23 +4,26 @@ import { Planet, Character } from './entities'
 @JsonController()
 export default class MainController {
 
-    @Get("/films/:id([0-9]+)/characters/:sex?")
+    @Get("/films/:id([0-9]+)/characters")
+    async getCharacters(
+      @Param('id') id: number
+    ) {
+      return await Character.createQueryBuilder("character")
+        .where("character.film_id = :film_id", { film_id: id })
+        .take(30)
+        .getMany()
+    }
+
+    @Get("/films/:id([0-9]+)/characters/:sex")
     async getCharactersBySex(
       @Param('id') id: number,
       @Param('sex') sex: string
     ) {
-        if (sex) {
-          return await Character.createQueryBuilder("character")
-            .where("character.film_id = :film_id", { film_id: id })
-            .andWhere("character.sex = :sex", {sex: sex})
-            .take(30)
-            .getMany()
-        } else {
-          return await Character.createQueryBuilder("character")
-            .where("character.film_id = :film_id", { film_id: id })
-            .take(30)
-            .getMany()
-        }
+        return await Character.createQueryBuilder("character")
+          .where("character.film_id = :film_id", { film_id: id })
+          .andWhere("character.sex = :sex", {sex: sex})
+          .take(30)
+          .getMany()
       }
 
     @Get("/films/:id([0-9]+)/characters/height/:asc?")
@@ -44,7 +47,7 @@ export default class MainController {
     }
 
     @Get("/films/:id([0-9]+)/characters/age/:asc?")
-    async getCharacters(
+    async getCharactersByAge(
       @Param('id') id: number,
       @Param('asc') asc: string
     ) {
