@@ -4,7 +4,7 @@ This uses Typescript, Koa, routing-controllers and TypeORM in the backend, utili
 
 ## Initializing project
 
-1. After cloning, install dependencies with npm install.
+1. After cloning, install dependencies with npm install. The database connectionUrl is on line 29 of src/db.ts.
 2. Run **npm run start** to create tables in your database from the entity models. **If you encounter errors**,
 try commenting out lines 20-24, 49-53, and 80-84 in src/films/entities, save, and run **npm run start** again. Then uncomment these lines, save,
 and it should create the tables.
