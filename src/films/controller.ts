@@ -1,5 +1,5 @@
-import {JsonController, Get, Param /*BadRequestError*/} from 'routing-controllers'
-import { Film, Planet, Character } from './entities'
+import {JsonController, Get, Param, /*BadRequestError*/} from 'routing-controllers'
+import { /*Film,*/ Planet, Character } from './entities'
 import { Brackets } from 'typeorm'
 
 @JsonController()
@@ -9,7 +9,9 @@ export default class MainController {
     async getFilm(
       @Param('id') id: number
     ) {
-      return Film.findOne(id) 
+      return await Character.createQueryBuilder("character")
+        .where("character.film_id = :film_id", { film_id: id })
+        .getMany()
     }
 
     @Get("/planets/:climate")
