@@ -1,4 +1,4 @@
-import {JsonController, Get, Param, /*BadRequestError*/} from 'routing-controllers'
+import {JsonController, Get, Param, BadRequestError, /*BadRequestError*/} from 'routing-controllers'
 import { /*Film,*/ Planet, Character } from './entities'
 import { Brackets } from 'typeorm'
 
@@ -22,23 +22,23 @@ export default class MainController {
         }
       }
 
-    @Get("/films/:id([0-9]+)/characters/height/short?")
+    @Get("/films/:id([0-9]+)/characters/height/:asc?")
     async getCharacters(
       @Param('id') id: number,
-      @Param('short') short: string
+      @Param('asc') asc: string
     ) {
-        if (!short) {
-          return await Character.createQueryBuilder("character")
-            .where("character.film_id = :film_id", { film_id: id })
-            .orderBy("character.height", "DESC")
-            .getMany()
-        } else {
+        if (asc === 'short') {
           return await Character.createQueryBuilder("character")
             .where("character.film_id = :film_id", { film_id: id })
             .orderBy("character.height", "ASC")
             .getMany()
-          
-        }
+        } else if (asc === 'tall') {
+          return await Character.createQueryBuilder("character")
+            .where("character.film_id = :film_id", { film_id: id })
+            .orderBy("character.height", "DESC")
+            .getMany()  
+        } else throw new BadRequestError('Incorrect param passed')
+
     }
 
     @Get("/planets/:climate")
