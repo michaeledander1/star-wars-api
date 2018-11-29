@@ -89,14 +89,20 @@ export default class MainController {
   //If using seed data, best to test with is ====>  http :4000/planets?climate=temperate
     @Get("/planets")
     async getPlanets(
-      @QueryParam('climate') climate: string
+      @QueryParam('climate') climate: string,
+      @QueryParam('pageNumber') pageNumber: number
     ) {
+
+      // for pagination
+      const pageSize: number = 30
+      if (!pageNumber) pageNumber = 1
+
       if (climate) {
         const darkHairChars = await Planet.createQueryBuilder("planet")
           .leftJoinAndSelect("planet.characters", "character", "character.hair_color IN (:...hair_color)", { hair_color: ["brown", "black"] } )
           .where("planet.climate = :climate", { climate: climate })
-          .take(30)
-          .getMany()
+          .skip((--pageNumber) * pageSize)
+          .take(pageSize)
         if (!darkHairChars) throw new BadRequestError("Can't find anything!")
       
         return darkHairChars
