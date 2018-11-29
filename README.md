@@ -1,6 +1,6 @@
 # star-wars-api
 
-This uses Typescript, Koa, routing-controllers and TypeORM in the backend, utilizing docker and a postgres db.
+Built with Typescript, Koa, routing-controllers, TypeORM, docker and a postgres db.
 
 ## Initializing project
 
