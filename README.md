@@ -12,3 +12,4 @@ and it should create the tables.
 I have provided a little dummy data in dbSeedData.readme. First insert films, then planets, then characters.
 4. To test the endpoints you can use HTTPie (check it out here if you don't know it https://httpie.org/). 
 I have provided tests above each endpoint that demonstrate them best with the dummy data provided. 
+5. In the entities and controller files are some comments with a bit more information.
