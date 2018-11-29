@@ -1,6 +1,5 @@
-import {JsonController, Get, Param, BadRequestError, /*BadRequestError*/} from 'routing-controllers'
-import { /*Film,*/ Planet, Character } from './entities'
-// import { In } from 'typeorm'
+import {JsonController, Get, Param, BadRequestError} from 'routing-controllers'
+import { Planet, Character } from './entities'
 
 @JsonController()
 export default class MainController {
@@ -14,10 +13,12 @@ export default class MainController {
           return await Character.createQueryBuilder("character")
             .where("character.film_id = :film_id", { film_id: id })
             .andWhere("character.sex = :sex", {sex: sex})
+            .take(30)
             .getMany()
         } else {
           return await Character.createQueryBuilder("character")
             .where("character.film_id = :film_id", { film_id: id })
+            .take(30)
             .getMany()
         }
       }
@@ -31,11 +32,13 @@ export default class MainController {
           return await Character.createQueryBuilder("character")
             .where("character.film_id = :film_id", { film_id: id })
             .orderBy("character.height", "ASC")
+            .take(30)
             .getMany()
         } else if (asc === 'tall') {
           return await Character.createQueryBuilder("character")
             .where("character.film_id = :film_id", { film_id: id })
             .orderBy("character.height", "DESC")
+            .take(30)
             .getMany()  
         } else throw new BadRequestError('Incorrect param passed')
     }
@@ -49,11 +52,13 @@ export default class MainController {
           return await Character.createQueryBuilder("character")
             .where("character.film_id = :film_id", { film_id: id })
             .orderBy("character.age", "ASC")
+            .take(30)
             .getMany()
         } else if (asc === 'old') {
           return await Character.createQueryBuilder("character")
             .where("character.film_id = :film_id", { film_id: id })
             .orderBy("character.age", "DESC")
+            .take(30)
             .getMany()  
         } else throw new BadRequestError('Incorrect param passed')
     }
@@ -64,17 +69,8 @@ export default class MainController {
     ) {
       return await Planet.createQueryBuilder("planet")
         .leftJoinAndSelect("planet.characters", "character", "character.hair_color IN (:...hair_color)", { hair_color: ["brown", "black"] } )
-        // .where("character.hair_color IN (:hair_color)", { hair_color: ["brown", "black"] })
-        // .orWhere("character.hair_color = :hair_color", { hair_color: "black"})
-        // .where(new Brackets(qb => {
-        //   qb.where("character.hair_color = :hair_color", { hair_color: "brown" })
-        //     .orWhere("character.hair_color = :hair_color", { hair_color: "black"})
-        // }))
         .where("planet.climate = :climate", { climate: climate })
-        // .andWhere("character.hair_color = :hair_color", { hair_color: In(["brown", "black"]) })
+        .take(30)
         .getMany()
       }
-      // if (!planet) throw new BadRequestError('Planet does not exist')
-      // if(planet.characters.length === 0) throw new BadRequestError('this planet has no characters')
-      // return planet.characters
   }
