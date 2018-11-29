@@ -7,17 +7,19 @@ them together. */
 
 @JsonController()
 export default class MainController {
-  
+
   //Returns all characters of a given film
   //If using seed data, you can test with =====>    http :4000/films/1/characters
     @Get("/films/:id([0-9]+)/characters")
     async getCharacters(
       @Param('id') id: number
     ) {
-      return await Character.createQueryBuilder("character")
+      const chars = await Character.createQueryBuilder("character")
         .where("character.film_id = :film_id", { film_id: id })
         .take(30)
         .getMany()
+      if (!chars) throw new BadRequestError("Can't find your characters!")
+      return chars
     }
 
   //Returns characters of a given film filtered by sex
@@ -27,11 +29,14 @@ export default class MainController {
       @Param('id') id: number,
       @Param('sex') sex: string
     ) {
-        return await Character.createQueryBuilder("character")
+        const charsSex = await Character.createQueryBuilder("character")
           .where("character.film_id = :film_id", { film_id: id })
           .andWhere("character.sex = :sex", {sex: sex})
           .take(30)
           .getMany()
+        if (!charsSex) throw new BadRequestError("Can't find your characters")
+
+        return charsSex
       }
   
   //Returns characters of a given film ordered by height
@@ -84,10 +89,13 @@ export default class MainController {
     async getPlanets(
       @Param('climate') climate: string
     ) {
-      return await Planet.createQueryBuilder("planet")
+      const darkHairChars = await Planet.createQueryBuilder("planet")
         .leftJoinAndSelect("planet.characters", "character", "character.hair_color IN (:...hair_color)", { hair_color: ["brown", "black"] } )
         .where("planet.climate = :climate", { climate: climate })
         .take(30)
         .getMany()
+      if (!darkHairChars) throw new BadRequestError("Can't find anything!")
+
+      return darkHairChars
       }
   }
