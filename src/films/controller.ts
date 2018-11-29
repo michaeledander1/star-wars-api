@@ -5,13 +5,40 @@ import { Brackets } from 'typeorm'
 @JsonController()
 export default class MainController {
 
-    @Get("/films/:id([0-9]+)")
-    async getFilm(
-      @Param('id') id: number
+    @Get("/films/:id([0-9]+)/characters/:sex?")
+    async getCharactersBySex(
+      @Param('id') id: number,
+      @Param('sex') sex: string
     ) {
-      return await Character.createQueryBuilder("character")
-        .where("character.film_id = :film_id", { film_id: id })
-        .getMany()
+        if (sex) {
+          return await Character.createQueryBuilder("character")
+            .where("character.film_id = :film_id", { film_id: id })
+            .andWhere("character.sex = :sex", {sex: sex})
+            .getMany()
+        } else {
+          return await Character.createQueryBuilder("character")
+            .where("character.film_id = :film_id", { film_id: id })
+            .getMany()
+        }
+      }
+
+    @Get("/films/:id([0-9]+)/characters/height/short?")
+    async getCharacters(
+      @Param('id') id: number,
+      @Param('short') short: string
+    ) {
+        if (!short) {
+          return await Character.createQueryBuilder("character")
+            .where("character.film_id = :film_id", { film_id: id })
+            .orderBy("character.height", "DESC")
+            .getMany()
+        } else {
+          return await Character.createQueryBuilder("character")
+            .where("character.film_id = :film_id", { film_id: id })
+            .orderBy("character.height", "ASC")
+            .getMany()
+          
+        }
     }
 
     @Get("/planets/:climate")
@@ -30,9 +57,4 @@ export default class MainController {
       // if (!planet) throw new BadRequestError('Planet does not exist')
       // if(planet.characters.length === 0) throw new BadRequestError('this planet has no characters')
       // return planet.characters
-
-    @Get('/characters')
-    getCharacters() {
-      return Character.find()
-    }
   }
