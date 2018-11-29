@@ -1,8 +1,8 @@
-## star-wars-api
+# star-wars-api
 
 This uses Typescript, Koa, routing-controllers and TypeORM in the backend, utilizing docker and a postgres db.
 
-# Initializing project
+## Initializing project
 
 1. After cloning, install dependencies with npm install.
 2. Run npm run start to create tables in your database from the entity models. **If you encounter errors**,
