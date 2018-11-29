@@ -44,7 +44,6 @@ export default class MainController {
         //to sort by height or age
       } if (sort) {
         if (sort === 'height_asc') {
-          console.log('HHHHHHHHHHHHHHHHHHHHHHHHH')
           return await Character.createQueryBuilder("character")
             .where("character.film_id = :film_id", { film_id: id })
             .orderBy("character.height", "ASC")
