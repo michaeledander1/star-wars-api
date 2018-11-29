@@ -1,4 +1,4 @@
-import {JsonController, Get, Param, BadRequestError} from 'routing-controllers'
+import {JsonController, Get, Param, BadRequestError, QueryParam} from 'routing-controllers'
 import { Planet, Character } from './entities'
 
 /* As both the planets and characters are reliant on films, I decided to place all the controllers 
@@ -8,94 +8,98 @@ them together. */
 @JsonController()
 export default class MainController {
 
-  //Returns all characters of a given film
-  //If using seed data, you can test with =====>    http :4000/films/1/characters
-    @Get("/films/:id([0-9]+)/characters")
-    async getCharacters(
-      @Param('id') id: number
-    ) {
-      const chars = await Character.createQueryBuilder("character")
-        .where("character.film_id = :film_id", { film_id: id })
-        .take(30)
-        .getMany()
-      if (!chars) throw new BadRequestError("Can't find your characters!")
-      return chars
-    }
+  /* Returns all characters of a given film
+  If using seed data, you can test with =>    http :4000/films/1
+                                              http :4000/films/1?sort=height_desc
+                                              http :4000/films/1?sort=height_asc
+                                              http :4000/films/1?sex=male
+                                              http :4000/films/1?sex=female
+                                              http :4000/films/1?sort=age_desc
+                                              http :4000/films/1?sort=age_asc */
 
-  //Returns characters of a given film filtered by sex
-  //If using seed data, you can test with =====> http :4000/films/1/characters/male OR http :4000/films/1/characters/female
-    @Get("/films/:id([0-9]+)/characters/:sex")
-    async getCharactersBySex(
+    @Get("/films/:id([0-9]+)")
+    async getCharacters(
       @Param('id') id: number,
-      @Param('sex') sex: string
+      @QueryParam('sex') sex: string,
+      @QueryParam('sort') sort: string,
+      @QueryParam('pageNumber') pageNumber: number
     ) {
+      // for pagination
+      const pageSize: number = 30
+      if (!pageNumber) pageNumber = 1
+
+      //to filter on sex
+      if (sex) {
         const charsSex = await Character.createQueryBuilder("character")
           .where("character.film_id = :film_id", { film_id: id })
           .andWhere("character.sex = :sex", {sex: sex})
-          .take(30)
+          .skip((--pageNumber) * pageSize)
+          .take(pageSize)
           .getMany()
+
         if (!charsSex) throw new BadRequestError("Can't find your characters")
 
         return charsSex
-      }
-  
-  //Returns characters of a given film ordered by height
-  //If using seed data, you can test with =====> http :4000/films/1/characters/height/tall OR http :4000/films/1/characters/height/short
-    @Get("/films/:id([0-9]+)/characters/height/:asc")
-    async getCharactersByHeight(
-      @Param('id') id: number,
-      @Param('asc') asc: string
-    ) {
-        if (asc === 'short') {
+        
+        //to sort by height or age
+      } if (sort) {
+        if (sort === 'height_asc') {
+          console.log('HHHHHHHHHHHHHHHHHHHHHHHHH')
           return await Character.createQueryBuilder("character")
             .where("character.film_id = :film_id", { film_id: id })
             .orderBy("character.height", "ASC")
-            .take(30)
+            .skip((--pageNumber) * pageSize)
+            .take(pageSize)
             .getMany()
-        } else if (asc === 'tall') {
+        } else if (sort === 'height_desc') {
           return await Character.createQueryBuilder("character")
             .where("character.film_id = :film_id", { film_id: id })
             .orderBy("character.height", "DESC")
-            .take(30)
+            .skip((--pageNumber) * pageSize)
+            .take(pageSize)
             .getMany()  
-        } else throw new BadRequestError('Incorrect param passed')
-    }
-
-  //Returns characters of a given film ordered by age
-  //If using seed data, you can test with =====> http :4000/films/1/characters/age/young OR http :4000/films/1/characters/age/old
-    @Get("/films/:id([0-9]+)/characters/age/:asc")
-    async getCharactersByAge(
-      @Param('id') id: number,
-      @Param('asc') asc: string
-    ) {
-        if (asc === 'young') {
+        } else if (sort === 'age_asc') {
           return await Character.createQueryBuilder("character")
             .where("character.film_id = :film_id", { film_id: id })
             .orderBy("character.age", "ASC")
-            .take(30)
+            .skip((--pageNumber) * pageSize)
+            .take(pageSize)
             .getMany()
-        } else if (asc === 'old') {
+        } else if (sort === 'age_desc') {
           return await Character.createQueryBuilder("character")
             .where("character.film_id = :film_id", { film_id: id })
             .orderBy("character.age", "DESC")
-            .take(30)
+            .skip((--pageNumber) * pageSize)
+            .take(pageSize)
             .getMany()  
         } else throw new BadRequestError('Incorrect param passed')
+
+      } else {
+      const chars = await Character.createQueryBuilder("character")
+        .where("character.film_id = :film_id", { film_id: id })
+        .skip((--pageNumber) * pageSize)
+        .take(pageSize)
+        .getMany()
+      if (!chars) throw new BadRequestError("Can't find your characters!")
+      return chars
+      }
     }
 
   //Returns planets by climate and all dark haired people from planet
-  //If using seed data, best to test with is ====>  http :4000/planets/temperate
-    @Get("/planets/:climate")
+  //If using seed data, best to test with is ====>  http :4000/planets?climate=temperate
+    @Get("/planets")
     async getPlanets(
-      @Param('climate') climate: string
+      @QueryParam('climate') climate: string
     ) {
-      const darkHairChars = await Planet.createQueryBuilder("planet")
-        .leftJoinAndSelect("planet.characters", "character", "character.hair_color IN (:...hair_color)", { hair_color: ["brown", "black"] } )
-        .where("planet.climate = :climate", { climate: climate })
-        .take(30)
-        .getMany()
-      if (!darkHairChars) throw new BadRequestError("Can't find anything!")
-
-      return darkHairChars
+      if (climate) {
+        const darkHairChars = await Planet.createQueryBuilder("planet")
+          .leftJoinAndSelect("planet.characters", "character", "character.hair_color IN (:...hair_color)", { hair_color: ["brown", "black"] } )
+          .where("planet.climate = :climate", { climate: climate })
+          .take(30)
+          .getMany()
+        if (!darkHairChars) throw new BadRequestError("Can't find anything!")
+      
+        return darkHairChars
+      } else throw new BadRequestError('bad search')
       }
   }
