@@ -1,5 +1,10 @@
 import { BaseEntity, PrimaryGeneratedColumn, Column, Entity, OneToMany, ManyToOne } from 'typeorm'
 
+/* Ideally this would have included the commented out many to many relational tables.
+Unfortunately I was having a very hard time inserting seed data into postgres due to this
+relationship, and as the assignment was more about the endpoints, decided to make it to a many to
+one relational table. I left the commented out tables for the purpose of possible future improvement */
+
 @Entity()
 export class Film extends BaseEntity {
 
