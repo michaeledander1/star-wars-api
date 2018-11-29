@@ -1,6 +1,6 @@
 import {JsonController, Get, Param, BadRequestError, /*BadRequestError*/} from 'routing-controllers'
 import { /*Film,*/ Planet, Character } from './entities'
-import { Brackets } from 'typeorm'
+// import { In } from 'typeorm'
 
 @JsonController()
 export default class MainController {
@@ -63,12 +63,15 @@ export default class MainController {
       @Param('climate') climate: string
     ) {
       return await Planet.createQueryBuilder("planet")
-        .leftJoinAndSelect("planet.characters", "character")
+        .leftJoinAndSelect("planet.characters", "character", "character.hair_color IN (:...hair_color)", { hair_color: ["brown", "black"] } )
+        // .where("character.hair_color IN (:hair_color)", { hair_color: ["brown", "black"] })
+        // .orWhere("character.hair_color = :hair_color", { hair_color: "black"})
+        // .where(new Brackets(qb => {
+        //   qb.where("character.hair_color = :hair_color", { hair_color: "brown" })
+        //     .orWhere("character.hair_color = :hair_color", { hair_color: "black"})
+        // }))
         .where("planet.climate = :climate", { climate: climate })
-        .andWhere(new Brackets(qb => {
-          qb.where("character.hair_color = :hair_color", { hair_color: "brown"})
-            .orWhere("character.hair_color = :hair_color", { hair_color: "black"})
-        }))
+        // .andWhere("character.hair_color = :hair_color", { hair_color: In(["brown", "black"]) })
         .getMany()
       }
       // if (!planet) throw new BadRequestError('Planet does not exist')
